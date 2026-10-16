@@ -19,7 +19,7 @@ class KlasseB {
 ' KlasseA -- KlasseB 
 
 ' Richtung a - b
-KlasseA --> KlasseB
+' KlasseA --> KlasseB: " kennen sich"
 
 ' Richtung b - a
 ' KlasseA <-- KlasseB
