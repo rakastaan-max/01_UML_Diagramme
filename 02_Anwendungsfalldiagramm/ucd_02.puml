@@ -18,6 +18,10 @@ rectangle "Webshop" {
     ' EXTEND: Gutschein ist optional und erweitert den Basisfall
     ' Pfeil zeigt ZURÜCK zum Basisfall:
     UC_Gutschein .> UC_Bestellen : <<extend>>
+    note on link
+        Bedingung:
+        falls Gutschein vorhanden
+    end note
 }
 
 ' Der Kunde stößt nur den Hauptfall an:
