@@ -1,6 +1,45 @@
+@startuml sd_01 pommes
+!include tools/style.puml
 
+participant ":kunden" as kunden
+participant ":service" as service
+participant ":pommes" as pommes
 
+' 1. Asynchroner Aufruf (offene Spitze in Draw.io: ->>)
+kunden ->> service : bestellePommes()
+activate kunden
+activate service
 
+' 2. Synchroner Aufruf (gefüllte Spitze in Draw.io: ->)
+service -> kunden : pommesWasRauf()
+activate kunden
 
+' 3. Antwortnachricht (gestrichelt, offene Spitze: -->)
+kunden --> service : mitMayo()
+deactivate kunden
 
+' 4. Erzeugung zur Laufzeit
+create pommes
+service --> pommes : <<create>>
 
+' 5. Synchroner Selbstaufruf (gefüllte Spitze)
+activate pommes
+pommes -> pommes : Zubereitung()
+activate pommes
+deactivate pommes
+
+' 6. Antwortnachricht / Fertigmeldung (gestrichelt: -->)
+pommes --> service : pommesFertig()
+deactivate pommes
+
+' 7. Antwortnachricht an Kunden (gestrichelt: -->)
+service --> kunden : loveAllServeAll()
+deactivate service
+
+' 8. Asynchroner Aufruf / Aktion mit Zerstörung (offene Spitze: ->>)
+kunden ->> pommes : pommesEssen()
+destroy pommes
+
+deactivate kunden
+
+@enduml

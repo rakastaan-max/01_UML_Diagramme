@@ -1,0 +1,50 @@
+@startuml sd_02 parkhaus / allgemein
+!include tools/style.puml
+
+actor Kunde as K
+participant "Kassenautomat" as Automat
+participant "TarifRechner" as Rechner
+participant "ParkTicket" as Ticket
+participant "ZahlungsGateway" as Gateway
+
+' 1. Ticket einstecken
+K -> Automat : steckeTicketEin(ticketId)
+activate Automat
+
+Automat -> Rechner : berechneParkgebuehr(ticketId)
+activate Rechner
+
+Rechner -> Ticket : getEinfahrtszeit()
+activate Ticket
+Ticket --> Rechner : einfahrtszeit
+deactivate Ticket
+
+Rechner -> Rechner : kalkuliereTarif(dauer)
+Rechner --> Automat : betrag
+deactivate Rechner
+
+Automat --> K : zeigeBetrag(betrag)
+
+' 2. Bezahlung mit Karte
+K -> Automat : halteKarteVor()
+
+Automat -> Gateway : autorisiereZahlung(betrag, kartenDaten)
+activate Gateway
+
+Gateway --> Automat : statusOK
+deactivate Gateway
+
+Automat -> Ticket : markiereAlsBezahlt()
+activate Ticket
+Ticket --> Automat : quittiert
+deactivate Ticket
+
+Automat --> K : gebeTicketAus()
+
+' 3. Beleg anfordern und drucken (regulärer Ablauf)
+K -> Automat : fordereBelegAn()
+Automat --> K : druckeQuittung()
+
+deactivate Automat
+
+@enduml

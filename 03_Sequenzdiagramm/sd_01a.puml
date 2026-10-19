@@ -1,0 +1,50 @@
+@startuml sd_01a pommes_auswahl
+
+!include tools/style.puml
+
+participant ":kunden" as kunden
+participant ":service" as service
+participant ":pommes" as pommes
+
+' 1. Bestellung
+kunden ->> service : bestellePommes()
+activate kunden
+activate service
+
+' 2. Service fragt nach Sauce
+service -> kunden : pommesWasRauf()
+activate kunden
+
+' --- VERZWEIGUNG: alt / else (Mayo vs. Ketchup) ---
+alt [Kunde mag Mayo]
+    kunden --> service : mitMayo()
+else [Kunde mag Ketchup]
+    kunden --> service : mitKetchup()
+else [ohne Sauce]
+    kunden --> service : ohneSauce()
+end
+deactivate kunden
+
+' 3. Zubereitung & Erzeugung
+create pommes
+service --> pommes : <<create>>
+activate pommes
+
+pommes -> pommes : Zubereitung()
+activate pommes
+deactivate pommes
+
+pommes --> service : pommesFertig()
+deactivate pommes
+
+' 4. Ausgabe an Kunden
+service --> kunden : loveAllServeAll()
+deactivate service
+
+' 5. Verzehr
+kunden ->> pommes : pommesEssen()
+destroy pommes
+
+deactivate kunden
+
+@enduml
