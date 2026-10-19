@@ -43,28 +43,28 @@ rectangle "System: Online-Shop" {
     usecase "Benutzer verwalten" as UC_ManageUsers
 
     ' Anwendungsfall mit formellem "Extension Point" (UML 2.x Standard)
-    ' usecase "Profil bearbeiten\n--\n**extension points**\nZwei-Faktor aktivieren" as UC_Profile
-    ' usecase "2FA einrichten" as UC_2FA
+    usecase "Profil bearbeiten\n--\n**extension points**\nZwei-Faktor aktivieren" as UC_Profile
+    usecase "2FA einrichten" as UC_2FA
 
 
     ' ---------------------------------------------------------
     ' 5. BEZIEHUNGEN ZWISCHEN USE CASES
     ' ---------------------------------------------------------
 
-    ' <<include>>: Zwingend erforderlich (Teilschritt des Basis-Falls)
+    '<<include>>: Zwingend erforderlich (Teilschritt des Basis-Falls)
     ' Pfeilrichtung: Vom Basis-Fall ZUM eingeschlossenen Fall
-    ' UC_Order .> UC_Payment : <<include>>
+    UC_Order .> UC_Payment : <<include>>
 
     ' <<extend>>: Optionale Erweiterung unter bestimmten Bedingungen
     ' Pfeilrichtung: Vom erweiternden Fall ZUM Basis-Fall
-    ' UC_Coupon .> UC_Order : <<extend>>
+    UC_Coupon .> UC_Order : <<extend>>
 
-    ' Extension Point mit Notiz/Bedingung direkt an der Beziehung
-    ' UC_2FA .> UC_Profile : <<extend>>
-    ' note on link
-    '     **Bedingung:** falls SMS-Verfahren gewünscht
-    '     **Extension Point:** Zwei-Faktor aktivieren
-    ' end note
+    'Extension Point mit Notiz/Bedingung direkt an der Beziehung
+    UC_2FA .> UC_Profile : <<extend>>
+    note on link
+    **Bedingung:** falls SMS-Verfahren gewünscht
+    **Extension Point:** Zwei-Faktor aktivieren
+    end note
 }
 
 
@@ -72,31 +72,31 @@ rectangle "System: Online-Shop" {
 ' 6. GENERALISIERUNG VON AKTEUREN (Vererbung)
 ' -------------------------------------------------------------
 ' Der Administrator ist ein spezialisierter Benutzer und erbt dessen Rechte
-' benutzer <|-- admin
+benutzer <|-- admin
 
 
 ' -------------------------------------------------------------
 ' 7. ASSOZIATIONEN (Verbindung zwischen Akteur und Use Case)
 ' -------------------------------------------------------------
 ' Einfache Kommunikationspfade (durchgezogene Linie)
-' benutzer -- UC_Cart
-' benutzer -- UC_Order
-' benutzer -- UC_Profile
+benutzer -- UC_Cart
+benutzer -- UC_Order
+benutzer -- UC_Profile
 
 ' Primärer Akteur stößt den Admin-Fall an
-' admin -- UC_ManageUsers
+admin -- UC_ManageUsers
 
 ' Sekundärer Akteur (wird vom System zur Abwicklung hinzugezogen)
-' UC_Payment -- paymentService
+UC_Payment -- paymentService
 
 
 ' -------------------------------------------------------------
 ' 8. FREISTEHENDE NOTIZ (Zusätzliche Erklärung / Randbedingung)
 ' -------------------------------------------------------------
-' note top of UC_Payment
-'   Erfordert PCI-DSS-konforme
-'   Verschlüsselung der Schnittstelle.
-' end note
+note top of UC_Payment
+Erfordert PCI-DSS-konforme
+Verschlüsselung der Schnittstelle.
+end note
 
 @enduml
 
