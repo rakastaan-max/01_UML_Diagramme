@@ -1,0 +1,43 @@
+@startuml ac_03 / gastro
+
+!include tools/style.puml
+
+|Gast|
+start
+:Bestellung aufgeben;
+
+|Kellner|
+:Bestellung aufnehmen;
+:Bons weiterleiten;
+
+' ========================================================
+' FORK: Küche und Bar arbeiten parallel
+' ========================================================
+fork
+    |Küche|
+    -> \n\n ;
+    :Essen kochen;
+    :Essen bereitstellen;
+
+fork again
+    |Bar|
+    -> \n\n ;
+    :Getränk einschenken;
+    :Getränk bereitstellen;
+
+end fork
+' ========================================================
+' JOIN: Kellner holt beides ab
+' ========================================================
+
+|Kellner|
+-> \n ;
+:Bestellung zusammentragen;
+:Speisen und Getränke servieren;
+
+|Gast|
+:Bestellung entgegennehmen;
+:Essen und Trinken genießen;
+
+stop
+@enduml

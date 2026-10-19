@@ -1,6 +1,35 @@
 
+@startuml act_01 flughafen
+!include tools/style.puml
 
+|Fluggast|
+start
+:Ticket zeigen;
 
+|Abfertigung|
+:Ticket überprüfen;
 
+|Fluggast|
+if () then ([Ticket OK])
+    :Gepäck überreichen;
+    
+    |Abfertigung|
+    :Gewicht überprüfen;
+    
+    if () then ([Gewicht OK])
+        ' Regulärer Pfad ohne Übergepäck
+    else ([Übergewicht])
+        |Fluggast|
+        :Zusatzkosten bezahlen;
+    endif
 
+    |Abfertigung|
+    :Bordkarte ausstellen;
+    stop
 
+else ([Ticket nicht OK])
+    :Service kontaktieren;
+    end
+endif
+
+@enduml

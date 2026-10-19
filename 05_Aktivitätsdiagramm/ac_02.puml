@@ -1,0 +1,58 @@
+@startuml ac_02 parkhaus
+!include tools/style.puml
+
+|Kunde|
+start
+:Ticket in Kassenautomat einführen;
+
+|Kassenautomat|
+:Ticket-ID scannen;
+:Einfahrtszeit ermitteln;
+:Parkgebühr berechnen;
+:Zahlungsbetrag am Display anzeigen;
+
+|Kunde|
+:Zahlungskarte vorhalten;
+
+|Kassenautomat|
+:Kartendaten auslesen;
+:Autorisierungsanfrage stellen;
+
+|Zahlungsdienst|
+:Karten- und Kontodaten prüfen;
+
+if (Deckung / Autorisierung vorhanden?) then ([ja])
+    :Transaktion bestätigen;
+    |Kassenautomat|
+    :Zahlungsbestätigung empfangen;
+    :Ticket als "bezahlt" entwerten;
+    :Ticket ausgeben;
+    
+    |Kunde|
+    :Ticket entnehmen;
+    
+    |Kassenautomat|
+    if (Beleg-Taste gedrückt?) then ([ja])
+        :Quittung drucken;
+        |Kunde|
+        :Quittung entnehmen;
+    else ([nein])
+        ' Kein Beleg gewünscht -> Pfad läuft direkt weiter
+    endif
+
+    |Kunde|
+    :Zum Fahrzeug begeben;
+    stop
+
+else ([nein])
+    :Transaktion ablehnen;
+    |Kassenautomat|
+    :Fehlermeldung auf Display anzeigen;
+    :Ticket unbezahlt zurückgeben;
+    
+    |Kunde|
+    :Ticket entnehmen;
+    stop
+endif
+
+@enduml
