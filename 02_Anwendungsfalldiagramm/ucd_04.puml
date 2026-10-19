@@ -1,0 +1,66 @@
+@startuml ucd_4 pizzeria
+
+' Optionale Einbindung deiner zentralen Stildatei:
+!include tools/style.puml
+
+left to right direction
+
+' --- AKTEURE ---
+actor "Mitarbeiter" as mitarbeiter
+actor "Fahrer" as fahrer
+actor "Kunde" as kunde
+
+' --- SYSTEMGRENZE ---
+rectangle "ucd: Pizzeria" {
+    usecase "Bestellanruf" as UC_Bestellanruf
+    usecase "Kundendaten erfassen" as UC_Kundendaten
+    usecase "Bestellung aufnehmen" as UC_BestellungAufnehmen
+    usecase "Ausliefern" as UC_Ausliefern
+    usecase "Selbstabholung" as UC_Selbstabholung
+    usecase "SMS senden" as UC_SMSSenden
+
+    ' --- EXTEND & INCLUDE BEZIEHUNGEN ---
+    ' Kundendaten erfassen erweitert Bestellanruf (Bedingung: Falls Kunde neu)
+    UC_Kundendaten .> UC_Bestellanruf : <<extend>>
+    note on link
+        Falls Kunde neu
+    end note
+
+    ' Bestellanruf schließt Bestellung aufnehmen ein
+    UC_Bestellanruf .> UC_BestellungAufnehmen : <<include>>
+
+    ' Ausliefern erweitert Bestellung aufnehmen (Bedingung: Lieferung gewünscht)
+    UC_Ausliefern .> UC_BestellungAufnehmen : <<extend>>
+    note on link
+        Lieferung gewünscht
+    end note
+
+    ' Selbstabholung erweitert Bestellung aufnehmen (Bedingung: Lieber selber abholen)
+    UC_Selbstabholung .> UC_BestellungAufnehmen : <<extend>>
+    note on link
+        Lieber selber abholen
+    end note
+
+    ' Ausliefern schließt SMS senden ein
+    UC_Ausliefern .> UC_SMSSenden : <<include>>
+}
+
+' --- AKTEUR-ASSOZIATIONEN ---
+
+' Mitarbeiter ist beteiligt an:
+mitarbeiter -- UC_Bestellanruf
+mitarbeiter -- UC_Kundendaten
+mitarbeiter -- UC_BestellungAufnehmen
+mitarbeiter -- UC_Selbstabholung
+
+' Kunde ist beteiligt an:
+UC_Bestellanruf -- kunde
+UC_Kundendaten -- kunde
+UC_BestellungAufnehmen -- kunde
+UC_Selbstabholung -- kunde
+
+' Fahrer ist beteiligt an:
+fahrer -- UC_Ausliefern
+fahrer -- UC_SMSSenden
+
+@enduml

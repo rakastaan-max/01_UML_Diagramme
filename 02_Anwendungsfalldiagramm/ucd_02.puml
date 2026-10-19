@@ -1,0 +1,26 @@
+@startuml ucd_2
+
+!include tools/style.puml
+
+left to right direction
+
+actor Kunde as kunde
+
+rectangle "Webshop" {
+    usecase "Bestellung aufgeben" as UC_Bestellen
+    usecase "Zahlung durchführen" as UC_Bezahlen
+    usecase "Gutscheincode einlösen" as UC_Gutschein
+
+    ' INCLUDE: Bestellen geht NICHT ohne Bezahlen
+    ' Pfeil zeigt zum Teilschritt:
+    UC_Bestellen .> UC_Bezahlen : <<include>>
+
+    ' EXTEND: Gutschein ist optional und erweitert den Basisfall
+    ' Pfeil zeigt ZURÜCK zum Basisfall:
+    UC_Gutschein .> UC_Bestellen : <<extend>>
+}
+
+' Der Kunde stößt nur den Hauptfall an:
+kunde -- UC_Bestellen
+
+@enduml

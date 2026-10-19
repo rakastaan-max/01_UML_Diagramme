@@ -1,6 +1,21 @@
+@startuml ucd_1
 
+!include tools/style.puml
 
+left to right direction
 
+'akteure
+actor Kunde as kunde
 
+'systemgrenze
+rectangle "Webshop" {
+    usecase "Artikel suchen" as UC_Suchen
+    usecase "Warenkorb ansehen" as UC_Warenkorb
+    usecase "Bestellung aufgeben" as UC_Bestellen
+}
 
+kunde -- UC_Suchen
+kunde -- UC_Warenkorb
+kunde -- UC_Bestellen
 
+@enduml

@@ -1,0 +1,105 @@
+
+@startuml usecase allgemein
+
+' -------------------------------------------------------------
+' 1. GRUNDKONFIGURATION & STIL
+' -------------------------------------------------------------
+skinparam {
+    nodesep 40
+    ranksep 40
+}
+
+' Horizontale Ausrichtung (Akteure links/rechts, System in der Mitte)
+left to right direction
+
+' -------------------------------------------------------------
+' 2. AKTEURE (Actors)
+' -------------------------------------------------------------
+
+' Standard-Akteur (Menschliche Rolle)
+actor "Standard-Benutzer" as benutzer
+
+' Akteur mit expliziter Rollenbezeichnung
+actor "Administrator" as admin
+
+' Sekundärer Akteur (z. B. Partnersystem, Zahlungsdienst oder Datenbank)
+actor "Zahlungs-Gateway\n    <<ext.System>>" as paymentService
+
+
+' -------------------------------------------------------------
+' 3. SYSTEMGRENZE (System Boundary)
+' Definiert den Scope der zu entwickelnden Software
+' -------------------------------------------------------------
+rectangle "System: Online-Shop" {
+
+    ' ---------------------------------------------------------
+    ' 4. ANWENDUNGSFÄLLE (Use Cases)
+    ' ---------------------------------------------------------
+    ' Einfache Anwendungsfälle
+    usecase "Warenkorb einsehen" as UC_Cart
+    usecase "Bestellung aufgeben" as UC_Order
+    usecase "Zahlung autorisieren" as UC_Payment
+    usecase "Gutschein anwenden" as UC_Coupon
+    usecase "Benutzer verwalten" as UC_ManageUsers
+
+    ' Anwendungsfall mit formellem "Extension Point" (UML 2.x Standard)
+    ' usecase "Profil bearbeiten\n--\n**extension points**\nZwei-Faktor aktivieren" as UC_Profile
+    ' usecase "2FA einrichten" as UC_2FA
+
+
+    ' ---------------------------------------------------------
+    ' 5. BEZIEHUNGEN ZWISCHEN USE CASES
+    ' ---------------------------------------------------------
+
+    ' <<include>>: Zwingend erforderlich (Teilschritt des Basis-Falls)
+    ' Pfeilrichtung: Vom Basis-Fall ZUM eingeschlossenen Fall
+    ' UC_Order .> UC_Payment : <<include>>
+
+    ' <<extend>>: Optionale Erweiterung unter bestimmten Bedingungen
+    ' Pfeilrichtung: Vom erweiternden Fall ZUM Basis-Fall
+    ' UC_Coupon .> UC_Order : <<extend>>
+
+    ' Extension Point mit Notiz/Bedingung direkt an der Beziehung
+    ' UC_2FA .> UC_Profile : <<extend>>
+    ' note on link
+    '     **Bedingung:** falls SMS-Verfahren gewünscht
+    '     **Extension Point:** Zwei-Faktor aktivieren
+    ' end note
+}
+
+
+' -------------------------------------------------------------
+' 6. GENERALISIERUNG VON AKTEUREN (Vererbung)
+' -------------------------------------------------------------
+' Der Administrator ist ein spezialisierter Benutzer und erbt dessen Rechte
+' benutzer <|-- admin
+
+
+' -------------------------------------------------------------
+' 7. ASSOZIATIONEN (Verbindung zwischen Akteur und Use Case)
+' -------------------------------------------------------------
+' Einfache Kommunikationspfade (durchgezogene Linie)
+' benutzer -- UC_Cart
+' benutzer -- UC_Order
+' benutzer -- UC_Profile
+
+' Primärer Akteur stößt den Admin-Fall an
+' admin -- UC_ManageUsers
+
+' Sekundärer Akteur (wird vom System zur Abwicklung hinzugezogen)
+' UC_Payment -- paymentService
+
+
+' -------------------------------------------------------------
+' 8. FREISTEHENDE NOTIZ (Zusätzliche Erklärung / Randbedingung)
+' -------------------------------------------------------------
+' note top of UC_Payment
+'   Erfordert PCI-DSS-konforme
+'   Verschlüsselung der Schnittstelle.
+' end note
+
+@enduml
+
+
+
+

@@ -1,0 +1,30 @@
+@startuml ucd_3
+
+!include tools/style.puml
+
+left to right direction
+
+actor Kunde as kunde
+actor DHL as dhl
+
+rectangle "Webshop" {
+    usecase "Bestellung aufgeben" as UC_Order
+    usecase "Zahlung verarbeiten" as UC_Payment
+    usecase "Expressversand wählen" as UC_Express
+
+    ' INCLUDE: Zwingend erforderlich (Pfeil zeigt zum Teil)
+    UC_Order .> UC_Payment : <<include>>
+
+    ' EXTEND: Optional (Pfeil zeigt ZURÜCK zur Basis)
+    UC_Express .> UC_Order : <<extend>>
+    note on link
+        Bedingung:
+        falls Kunde Eillieferung wünscht
+    end note
+}
+
+kunde -- UC_Order
+dhl -- UC_Express
+
+
+@enduml

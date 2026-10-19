@@ -1,0 +1,38 @@
+@startuml ucd_06 / parkhaus
+!include tools/style.puml
+
+left to right direction
+
+' Primärer menschlicher Akteur (links)
+actor "Kunde" as kunde
+
+' Sekundärer Akteur / Partnersystem (rechts)
+actor "Zahlungsdienst\n<<Secondary System>>" as paymentService
+
+rectangle "Parkhaus-Kassensystem" {
+    usecase "Parkticket bezahlen" as UC_PayTicket
+    usecase "Parkgebühr berechnen" as UC_Calc
+    usecase "Kartenzahlung autorisieren" as UC_Authorize
+    usecase "Quittung drucken" as UC_Receipt
+
+    ' ZWINGENDE TEILSCHRITTE (include):
+    ' Bezahlen schließt Gebührenberechnung und Kartenautorisierung zwingend ein
+    UC_PayTicket .> UC_Calc : <<include>>
+    UC_PayTicket .> UC_Authorize : <<include>>
+
+    ' OPTIONALER SCHRITT (extend):
+    ' Quittungsdruck erweitert das Bezahlen nur bei Bedarf
+    UC_Receipt .> UC_PayTicket : <<extend>>
+    note on link
+        Bedingung:
+        falls Beleg angefordert
+    end note
+}
+
+' Der Kunde stößt den Hauptanwendungsfall an:
+kunde -- UC_PayTicket
+
+' Das externe System wickelt die Autorisierung ab:
+UC_Authorize -- paymentService
+
+@enduml
