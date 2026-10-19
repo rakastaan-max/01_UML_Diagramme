@@ -1,0 +1,43 @@
+@startuml sm_02 fahrstuhl_tueren
+!include tools/style.puml
+
+[*] --> Stillstand : Systemstart
+
+' 1. Ruhezustand (Türen verriegelt)
+state Stillstand {
+    Stillstand : do / warten auf Ruf
+}
+
+' 2. Fahrt zum Ziel
+Stillstand --> InFahrt : Ruf erhalten / Motor starten
+
+state InFahrt {
+    InFahrt : do / fahren
+}
+
+' 3. Ankunft & Türzyklus
+InFahrt --> TuerenOeffnend : Ziel erreicht / Motor stoppen
+
+state TuerenOeffnend {
+    TuerenOeffnend : entry / Türmotor öffnen
+}
+
+TuerenOeffnend --> TuerenOffen : Endschalter erreicht
+
+state TuerenOffen {
+    TuerenOffen : do / Passagiere wechseln
+}
+
+TuerenOffen --> TuerenSchliessend : Timer abgelaufen
+
+state TuerenSchliessend {
+    TuerenSchliessend : entry / Türmotor schließen
+}
+
+' Zurück in den Ruhezustand
+TuerenSchliessend --> Stillstand : Tür verriegelt
+
+' Optionales Abschalten
+Stillstand --> [*] : Außer Betrieb nehmen
+
+@enduml

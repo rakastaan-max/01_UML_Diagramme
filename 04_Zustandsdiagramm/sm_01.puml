@@ -1,6 +1,24 @@
+@startuml sm_01 luefter
+!include tools/style.puml
 
+' Startknoten
+[*] --> Stufe1 : stufe 1 wählen
 
+' Zustand: Stufe 1
+state "Stufe 1" as Stufe1 {
+    Stufe1 : do / langsames Drehen
+}
 
+' Zustand: Stufe 2
+state "Stufe 2" as Stufe2 {
+    Stufe2 : do / schnellesDrehen
+}
 
+' Wechsel zwischen den Stufen
+Stufe1 --> Stufe2 : stufe 2 wählen
+Stufe2 --> Stufe1 : stufe 1 wählen
 
+' Endknoten
+Stufe1 --> [*] : ausschalten
 
+@enduml

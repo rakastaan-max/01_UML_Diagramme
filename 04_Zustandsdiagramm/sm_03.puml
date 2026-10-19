@@ -1,0 +1,55 @@
+@startuml sm_03 cybercab
+!include tools/style.puml
+
+[*] --> Bereit : Flotte online schalten
+
+' 1. Ruhezustand / Bereit für Aufträge
+state Bereit {
+    Bereit : do / Flottenposition übermitteln
+}
+
+' 2. Anfahrt zum Kunden
+Bereit --> Anfahrt : Auftrag erhalten\n/ Route berechnen
+
+state Anfahrt {
+    Anfahrt : do / autonom zum Abholort fahren
+}
+
+' 3. Einstiegsphase am Abholort
+Anfahrt --> Fahrgastwechsel : Ziel erreicht / Warnblinker an
+
+state Fahrgastwechsel {
+    Fahrgastwechsel : entry / Flügeltüren öffnen
+    Fahrgastwechsel : do / Ein-/Ausstieg überwachen
+}
+
+Fahrgastwechsel --> Fahrgastwechsel : Hindernis erkannt\n/ Türen offen halten
+
+' 4. Autonome Kundenfahrt
+Fahrgastwechsel --> Passagierfahrt : Türen geschlossen\n[Fahrgast hat Fahrt in App gestartet]
+
+state Passagierfahrt {
+    Passagierfahrt : entry / Türen verriegeln
+    Passagierfahrt : do / FSD-Navigation ausführen
+}
+
+' Ankunft am Zielort -> zurück zum Fahrgastwechsel für den Ausstieg
+Passagierfahrt --> Fahrgastwechsel : Zielort erreicht / anhalten
+
+' Nach dem Ausstieg: Entweder neuer Auftrag, Ruhezustand oder Akku leer
+Fahrgastwechsel --> Bereit : Fahrgast ausgestiegen\n[Akku >= 20%]
+
+' 5. Automatischer Ladevorgang (Induktives Laden)
+Bereit --> InduktivesLaden : [Akku < 20%]\n/ navigiere zu Ladehub
+
+state InduktivesLaden {
+    InduktivesLaden : entry / über Ladepad parken
+    InduktivesLaden : do / kabellos laden
+}
+
+InduktivesLaden --> Bereit : [Akku >= 90%]\n/ Ladevorgang beenden
+
+' Außerbetriebnahme
+Bereit --> [*] : Wartung / Flotte stoppen
+
+@enduml
